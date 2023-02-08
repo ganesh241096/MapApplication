@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Map Application</string>
+    <string name="map_key">AIzaSyDypvJ_BtvptyzUJzNmI6TKe3vo7TXIuHs</string>
+    <string name="pickup">Pickup Location</string>
+    <string name="enter_city_name">Enter city</string>
+    <string name="drop">Drop Location</string>
+    <string name="find">Find</string>
+    <string name="search">Search</string>
+    <string name="clear">Clear</string>
+    <string name="enter_pickup_point">Enter pickup point</string>
+    <string name="enter_drop_point">Enter drop point</string>
+    <string name="please_choose_diffrent_location">Both location are same, please choose different location,</string>
+</resources>
