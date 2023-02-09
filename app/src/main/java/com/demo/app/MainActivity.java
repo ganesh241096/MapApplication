@@ -120,16 +120,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                     Thread thread1 = new Thread() {
                         public void run() {
                             pickUp[0] = getLocationFromAddress(binding.etPickupPoint.getText().toString().trim());
-                            setupMarker(new LatLng(pickUp[0].latitude, pickUp[0].longitude));
                         }
                     };
                     Thread thread2 = new Thread() {
                         public void run() {
                             drop[0] = getLocationFromAddress(binding.etDropPoint.getText().toString().trim());
-                            setupMarker(new LatLng(drop[0].latitude, drop[0].longitude));
                         }
                     };
                     thread1.start();
+
                     try {
                         thread1.join();
                         thread2.start();
@@ -138,6 +137,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                         e.printStackTrace();
                     }
 
+                    if (pickUp[0] == null || drop[0] == null) {
+                        showToast(getResources().getString(R.string.enter_appropriate_locations), 4);
+                        return;
+                    }
+                    //set markers
+                    setupMarker(new LatLng(pickUp[0].latitude, pickUp[0].longitude));
+                    setupMarker(new LatLng(drop[0].latitude, drop[0].longitude));
                     // drop polygon
                     drawArc(new LatLng(pickUp[0].latitude, pickUp[0].longitude),
                             new LatLng(drop[0].latitude, drop[0].longitude));
@@ -206,21 +212,23 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         vectorDrawable.draw(canvas);
         return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
+
     public LatLng getLocationFromAddress(String strAddress) {
         Geocoder coder = new Geocoder(this);
         List<Address> address;
         LatLng latLng = null;
         try {
             address = coder.getFromLocationName(strAddress, 1);
-            if (address == null) {
+            if (address == null || address.isEmpty()) {
                 return null;
+            } else {
+                Address location = address.get(0);
+                location.getLatitude();
+                location.getLongitude();
+                latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                System.out.println("LatLong :" + location.getLatitude() + " " + location.getLongitude());
+                return latLng;
             }
-            Address location = address.get(0);
-            location.getLatitude();
-            location.getLongitude();
-            latLng = new LatLng(location.getLatitude(), location.getLongitude());
-            System.out.println("LatLong :" + location.getLatitude() + " " + location.getLongitude());
-            return latLng;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -245,7 +253,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             return false;
         }
         if (binding.etDropPoint.getText().toString().trim().equalsIgnoreCase(binding.etPickupPoint.getText().toString().trim())) {
-            showToast(getResources().getString(R.string.please_choose_diffrent_location), 4);
+            showToast(getResources().getString(R.string.please_choose_different_location), 4);
             return false;
         }
         return true;
